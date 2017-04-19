@@ -20,7 +20,7 @@ export default class Server {
     this.app.use(bodyParser.json()) // Parsers for POST data
     this.app.use(bodyParser.urlencoded({ extended: false }))
     this.app.use(express.static(path.join(__dirname, '../'))) // Point static path to dist
-    this.app.use('/',this.routing.run())
+
   }
 
   configureCORS() {
@@ -33,6 +33,11 @@ export default class Server {
     })
   }
 
+  configureRoutes() {
+    this.app.use('/api',this.routing.api()) // Set our api routes
+    this.app.use('/',this.routing.other()) // Catch all other routes and return the index file
+  }
+
 
   listen(port) {
     this.app.listen(port, () => {
@@ -43,6 +48,7 @@ export default class Server {
   run() {
     this.configureApp()
     this.configureCORS()
+    this.configureRoutes()
     this.listen(this.app.get('port'))
   }
 
